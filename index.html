@@ -1,21 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Empty Project</title>
-    <meta itemprop="name" content="Empty Project">
-    <meta name="twitter:title" content="Empty Project">
-    <meta property="og:title" content="Empty Project">
-    <meta property="og:site_name" content="Empty Project">
-    <meta name="description" content="Start with a blank project.">
-    <meta itemprop="description" content="Start with a blank project.">
-    <meta property="og:description" content="Start with a blank project.">
-    <meta name="twitter:description" content="Start with a blank project.">
-    <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
-    <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="face, slam"></script>
+    <meta charset="utf-8">
+    <title>GPS AR Demo</title>
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+    <!-- AR.js with GPS support -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+        #info {
+            position: fixed;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 999;
+            background: rgba(0,0,0,0.5);
+            padding: 5px;
+        }
+    </style>
 </head>
+
 <body>
-<script src="bundle.js"></script>
+
+<div id="info">Move your phone to discover nearby AR objects 🌍</div>
+
+<a-scene
+        vr-mode-ui="enabled: false"
+        embedded
+        arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false"
+>
+
+    <!-- Camera with GPS -->
+    <a-camera gps-new-camera rotation-reader></a-camera>
+
+    <!-- POI #1 -->
+    <a-entity
+            gps-new-entity-place="latitude: 19.4326; longitude: -99.1332;"
+    >
+        <a-box color="red" scale="5 5 5"></a-box>
+        <a-text value="Zócalo" align="center" color="white" scale="20 20 20" position="0 10 0"></a-text>
+    </a-entity>
+
+    <!-- POI #2 -->
+    <a-entity
+            gps-new-entity-place="latitude: 19.4350; longitude: -99.1410;"
+    >
+        <a-sphere color="blue" radius="3"></a-sphere>
+        <a-text value="Alameda Central" align="center" color="white" scale="20 20 20" position="0 8 0"></a-text>
+    </a-entity>
+
+    <!-- POI #3 -->
+    <a-entity
+            gps-new-entity-place="latitude: 19.4260; longitude: -99.1677;"
+    >
+        <a-cylinder color="green" radius="3" height="6"></a-cylinder>
+        <a-text value="Chapultepec" align="center" color="white" scale="20 20 20" position="0 10 0"></a-text>
+    </a-entity>
+
+</a-scene>
+
+<script>
+    // Debug GPS position
+    window.addEventListener('gps-camera-update-position', e => {
+        console.log('Current GPS position:', e.detail.position);
+    });
+
+    // Handle errors
+    window.addEventListener('gps-camera-error', e => {
+        alert('GPS Error: ' + e.detail.message);
+    });
+</script>
+
 </body>
 </html>
